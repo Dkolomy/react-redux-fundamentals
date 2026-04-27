@@ -1,4 +1,9 @@
+import store from "./app/store"
+
 export const App = () => {
+
+  console.log('State:', store.getState())
+
   return (
     <div className="App">
       <nav>
