@@ -1,6 +1,16 @@
 import { PayloadAction } from "@reduxjs/toolkit"
 import { createAppSlice } from "../../app/createAppSlice"
 
+export const STATUS_FILTERS = {
+  All: 'all',
+  Active: 'active',
+  Completed: 'completed',
+}
+
+export const AVAILABLE_COLORS = ['red', 'green', 'blue', 'purple', 'orange']
+
+export const capitalize = (s: string) => s[0].toUpperCase() + s.slice(1)
+
 type Filters = {
   status: string
   colors: string[]
@@ -24,8 +34,13 @@ export const filtersSlice = createAppSlice({
     statusFilterChanged: (state, action: PayloadAction<string>) => {
       state.filters.status = action.payload
     },
-    colorFilterChanged: (state, action: PayloadAction<string[]>) => {
-      state.filters.colors = action.payload
+    colorFilterChanged: (state, action: PayloadAction<{color: string, changeType: 'added' | 'removed'}>) => {
+      const { color, changeType } = action.payload
+      if (changeType === 'added') {
+        state.filters.colors.push(color)
+      } else {
+        state.filters.colors = state.filters.colors.filter(c => c !== color)
+      }
     },
   }
 })

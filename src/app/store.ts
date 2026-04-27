@@ -1,5 +1,6 @@
 import todoSlice from "../features/todo/todoSlice"
 import filtersSlice from "../features/filters/filtersSlice"
+// import { composeWithDevTools } from "redux-devtools-extension"
 import { configureStore } from "@reduxjs/toolkit"
 
 const store = configureStore({

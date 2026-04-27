@@ -1,7 +1,7 @@
 import type { PayloadAction } from "@reduxjs/toolkit"
 import { createAppSlice } from "../../app/createAppSlice"
 
-type Todo = {
+export type Todo = {
   id: number
   text: string
   completed: boolean
