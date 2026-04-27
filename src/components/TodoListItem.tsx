@@ -1,7 +1,12 @@
 import React from 'react'
 
 import {AVAILABLE_COLORS, capitalize} from '../features/filters/filtersSlice'
-import { todoColorSelected, todoDeleted, todoToggled, type Todo } from '../features/todo/todoSlice'
+import { 
+  todoColorSelected, 
+  todoDeleted, 
+  todoToggled, 
+  type Todo 
+} from '../features/todo/todoSlice'
 import { useAppDispatch } from '../app/hooks'
 
 type TodoListItemProps = {

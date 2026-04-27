@@ -1,12 +1,20 @@
 import classNames from 'classnames'
-import { STATUS_FILTERS, AVAILABLE_COLORS, capitalize, statusFilterChanged, colorFilterChanged, selectStatus, selectColors } from '../features/filters/filtersSlice'
-import { selectFilteredTodos } from '../features/todo/todoSlice'
+import {
+  STATUS_FILTERS,
+  AVAILABLE_COLORS,
+  capitalize,
+  statusFilterChanged,
+  colorFilterChanged,
+  selectStatus,
+  selectColors,
+} from '../features/filters/filtersSlice'
+import { selectFilteredTodos, todosAllCompleted, todosCleared } from '../features/todo/todoSlice'
 import { useAppDispatch, useAppSelector } from '../app/hooks'
 
 type RemainingTodosProps = {
   count: number
 }
-const RemainingTodos = ({count}: RemainingTodosProps) => {
+const RemainingTodos = ({ count }: RemainingTodosProps) => {
   const suffix = count === 1 ? '' : 's'
 
   return (
@@ -20,7 +28,7 @@ const RemainingTodos = ({count}: RemainingTodosProps) => {
 type StatusFiltersProps = {
   value: string
 }
-const StatusFilters = ({value: status}: StatusFiltersProps) => {
+const StatusFilters = ({ value: status }: StatusFiltersProps) => {
   const dispatch = useAppDispatch()
   const renderedFilters = Object.keys(STATUS_FILTERS).map((key) => {
     const value = STATUS_FILTERS[key as keyof typeof STATUS_FILTERS]
@@ -42,9 +50,7 @@ const StatusFilters = ({value: status}: StatusFiltersProps) => {
   return (
     <div className="filters statusFilters">
       <h5>Filter by Status</h5>
-      <ul>
-        {renderedFilters}
-      </ul>
+      <ul>{renderedFilters}</ul>
     </div>
   )
 }
@@ -52,27 +58,27 @@ const StatusFilters = ({value: status}: StatusFiltersProps) => {
 type ColorFiltersProps = {
   value: string[]
 }
-const ColorFilters = ({value: colors}: ColorFiltersProps) => {
+const ColorFilters = ({ value: colors }: ColorFiltersProps) => {
   const dispatch = useAppDispatch()
   const renderedColors = AVAILABLE_COLORS.map((color) => {
     const checked = colors.includes(color)
     const handleClick = () => {
-      const changeType = checked ? "removed" : "added"
+      const changeType = checked ? 'removed' : 'added'
       dispatch(colorFilterChanged({ color, changeType }))
       console.log('Color change: ', color, changeType)
     }
 
     return (
       <label key={color} style={{ display: 'block' }}>
-        <input 
+        <input
           type="checkbox"
-          name={color} 
-          checked={checked} 
-          onChange={handleClick} 
+          name={color}
+          checked={checked}
+          onChange={handleClick}
         />
-        <span 
-          className="color-block" 
-          style={{backgroundColor: color}}
+        <span
+          className="color-block"
+          style={{ backgroundColor: color }}
         ></span>
         {capitalize(color)}
       </label>
@@ -82,14 +88,13 @@ const ColorFilters = ({value: colors}: ColorFiltersProps) => {
   return (
     <div className="filters colorFilters">
       <h5>Filter by Color</h5>
-      <form className="colorSelection">
-        {renderedColors}
-      </form>
+      <form className="colorSelection">{renderedColors}</form>
     </div>
   )
 }
 
 const Footer = () => {
+  const dispatch = useAppDispatch()
   const colors = useAppSelector(selectColors)
   const status = useAppSelector(selectStatus)
   const filteredTodos = useAppSelector(selectFilteredTodos)
@@ -99,8 +104,8 @@ const Footer = () => {
     <footer className="footer">
       <div className="actions">
         <h5>Actions</h5>
-        <button className="button">Mark All Completed</button>
-        <button className="button">Clear Completed</button>
+        <button className="button" onClick={() => dispatch(todosAllCompleted())}>Mark All Completed</button>
+        <button className="button" onClick={() => dispatch(todosCleared())}>Clear Completed</button>
       </div>
 
       <RemainingTodos count={todosRemaining} />
