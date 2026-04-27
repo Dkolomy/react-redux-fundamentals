@@ -1,23 +1,26 @@
 import React from 'react'
 
 import {AVAILABLE_COLORS, capitalize} from '../features/filters/filtersSlice'
-import type { Todo } from '../features/todo/todoSlice'
+import { todoColorSelected, todoDeleted, todoToggled, type Todo } from '../features/todo/todoSlice'
+import { useAppDispatch } from '../app/hooks'
 
 type TodoListItemProps = {
   todo: Todo
-  onColorChange: (color: string) => void
-  onCompletedChange: (completed: boolean) => void
-  onDelete: (event: React.MouseEvent<HTMLButtonElement>) => void
 }
-const TodoListItem = ({todo, onColorChange, onCompletedChange, onDelete}: TodoListItemProps) => {
+const TodoListItem = ({todo}: TodoListItemProps) => {
+  const dispatch = useAppDispatch()
   const { text, completed, color } = todo
 
   const handleCompletedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onCompletedChange(e.target.checked)
+    dispatch(todoToggled(todo.id))
   }
 
   const handleColorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    onColorChange(e.target.value)
+    dispatch(todoColorSelected({ id: todo.id, color: e.target.value }))
+  }
+
+  const handleDelete = () => {
+    dispatch(todoDeleted(todo.id))
   }
 
   const colorOptions = AVAILABLE_COLORS.map((color) => (
@@ -48,7 +51,7 @@ const TodoListItem = ({todo, onColorChange, onCompletedChange, onDelete}: TodoLi
             <option value=""></option>
             {colorOptions}
           </select>
-          <button className="destroy" onClick={onDelete}>
+          <button className="destroy" onClick={handleDelete}>
             <svg
               width={20}
               height={20}

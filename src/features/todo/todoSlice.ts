@@ -1,5 +1,6 @@
 import type { PayloadAction } from "@reduxjs/toolkit"
 import { createAppSlice } from "../../app/createAppSlice"
+import { selectColors, selectStatus, STATUS_FILTERS } from "../filters/filtersSlice"
 
 export type Todo = {
   id: number
@@ -38,9 +39,59 @@ export const todoSlice = createAppSlice({
       if (todo) {
         todo.completed = !todo.completed
       }
+    },
+    todoColorSelected: (state, action: PayloadAction<{ id: number, color: string }>) => {
+      const todo = state.todos.find(todo => todo.id === action.payload.id)
+      if (todo) {
+        todo.color = action.payload.color
+      }
+    },
+    todoDeleted: (state, action: PayloadAction<number>) => {
+      state.todos = state.todos.filter(todo => todo.id !== action.payload)
+    },
+    todosAllCompleted: (state) => {
+      state.todos.forEach(todo => {
+        todo.completed = true
+      })
+    },
+    todosCleared: (state) => {
+      state.todos = state.todos.filter(todo => !todo.completed)
     }
   }
 })
 
-  export const { todoAdded, todoToggled } = todoSlice.actions
-  export default todoSlice.reducer
+export const { 
+  todoAdded, 
+  todoToggled, 
+  todoColorSelected, 
+  todoDeleted, 
+  todosAllCompleted, 
+  todosCleared 
+} = todoSlice.actions
+export default todoSlice.reducer
+
+export const selectCompletedTodos = (state: { todos: AppState }) => {
+  return state.todos.todos.filter(todo => todo.completed);
+}
+
+export const selectNotCompletedTodos = (state: { todos: AppState }) => {
+  return state.todos.todos.filter(todo => !todo.completed);
+}
+
+export const selectTodos = (state: { todos: AppState }) => state.todos.todos
+
+export const selectFilteredTodos = (state: { todos: AppState; filters: { filters: { status: string; colors: string[] } } }) => {
+  const todos = selectTodos(state)
+  const status = selectStatus(state)
+  const colors = selectColors(state)
+  switch (status) {
+    case STATUS_FILTERS.All:
+      return todos
+    case STATUS_FILTERS.Completed:
+      return todos.filter(todo => todo.completed && (colors.length === 0 || colors.includes(todo.color || '')))
+    case STATUS_FILTERS.Active:
+      return todos.filter(todo => !todo.completed && (colors.length === 0 || colors.includes(todo.color || '')))
+    default:
+      return todos
+  }
+}

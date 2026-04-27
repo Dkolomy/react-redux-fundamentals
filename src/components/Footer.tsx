@@ -1,5 +1,7 @@
 import classNames from 'classnames'
-import { STATUS_FILTERS, AVAILABLE_COLORS, capitalize } from '../features/filters/filtersSlice'
+import { STATUS_FILTERS, AVAILABLE_COLORS, capitalize, statusFilterChanged, colorFilterChanged, selectStatus, selectColors } from '../features/filters/filtersSlice'
+import { selectFilteredTodos } from '../features/todo/todoSlice'
+import { useAppDispatch, useAppSelector } from '../app/hooks'
 
 type RemainingTodosProps = {
   count: number
@@ -17,13 +19,14 @@ const RemainingTodos = ({count}: RemainingTodosProps) => {
 
 type StatusFiltersProps = {
   value: string
-  onChange: (status: string) => void
 }
-const StatusFilters = ({value: status, onChange}: StatusFiltersProps) => {
+const StatusFilters = ({value: status}: StatusFiltersProps) => {
+  const dispatch = useAppDispatch()
   const renderedFilters = Object.keys(STATUS_FILTERS).map((key) => {
     const value = STATUS_FILTERS[key as keyof typeof STATUS_FILTERS]
     const handleClick = () => {
-      onChange(value)
+      dispatch(statusFilterChanged(value))
+      console.log('Status change: ', value)
     }
     const className = value === status ? 'selected' : ''
 
@@ -48,14 +51,15 @@ const StatusFilters = ({value: status, onChange}: StatusFiltersProps) => {
 
 type ColorFiltersProps = {
   value: string[]
-  onChange: (color: string, changeType: 'added' | 'removed') => void
 }
-const ColorFilters = ({value: colors, onChange}: ColorFiltersProps) => {
+const ColorFilters = ({value: colors}: ColorFiltersProps) => {
+  const dispatch = useAppDispatch()
   const renderedColors = AVAILABLE_COLORS.map((color) => {
     const checked = colors.includes(color)
     const handleClick = () => {
       const changeType = checked ? "removed" : "added"
-      onChange(color, changeType)
+      dispatch(colorFilterChanged({ color, changeType }))
+      console.log('Color change: ', color, changeType)
     }
 
     return (
@@ -86,13 +90,11 @@ const ColorFilters = ({value: colors, onChange}: ColorFiltersProps) => {
 }
 
 const Footer = () => {
-  const colors: string[] = []
-  const status = STATUS_FILTERS.All
-  const todosRemaining = 1
+  const colors = useAppSelector(selectColors)
+  const status = useAppSelector(selectStatus)
+  const filteredTodos = useAppSelector(selectFilteredTodos)
+  const todosRemaining = filteredTodos.filter((todo) => !todo.completed).length
 
-  const onColorChange = (color: string, changeType: 'added' | 'removed') => console.log(color, changeType)
-  const onStatusChange = (status: string) => console.log('Status change: ', status)
-  
   return (
     <footer className="footer">
       <div className="actions">
@@ -102,8 +104,8 @@ const Footer = () => {
       </div>
 
       <RemainingTodos count={todosRemaining} />
-      <StatusFilters value={status} onChange={onStatusChange}/>
-      <ColorFilters value={colors} onChange={onColorChange}/>
+      <StatusFilters value={status} />
+      <ColorFilters value={colors} />
     </footer>
   )
 }

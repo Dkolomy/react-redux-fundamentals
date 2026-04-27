@@ -47,3 +47,6 @@ export const filtersSlice = createAppSlice({
 
 export const { statusFilterChanged, colorFilterChanged } = filtersSlice.actions
 export default filtersSlice.reducer
+
+export const selectStatus = (state: { filters: FiltersState }) => state.filters.filters.status
+export const selectColors = (state: { filters: FiltersState }) => state.filters.filters.colors
