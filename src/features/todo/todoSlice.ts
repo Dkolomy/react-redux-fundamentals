@@ -80,18 +80,28 @@ export const selectNotCompletedTodos = (state: { todos: AppState }) => {
 
 export const selectTodos = (state: { todos: AppState }) => state.todos.todos
 
-export const selectFilteredTodos = (state: { todos: AppState; filters: { filters: { status: string; colors: string[] } } }) => {
+const matchesColorFilter = (todo: Todo, selectedColors: string[]) =>
+  !todo.color || selectedColors.includes(todo.color)
+
+export const selectFilteredTodos = (state: {
+  todos: AppState
+  filters: { filters: { status: string; colors: string[] } }
+}) => {
   const todos = selectTodos(state)
   const status = selectStatus(state)
   const colors = selectColors(state)
   switch (status) {
     case STATUS_FILTERS.All:
-      return todos
+      return todos.filter((todo) => matchesColorFilter(todo, colors))
     case STATUS_FILTERS.Completed:
-      return todos.filter(todo => todo.completed && (colors.length === 0 || colors.includes(todo.color || '')))
+      return todos.filter(
+        (todo) => todo.completed && matchesColorFilter(todo, colors),
+      )
     case STATUS_FILTERS.Active:
-      return todos.filter(todo => !todo.completed && (colors.length === 0 || colors.includes(todo.color || '')))
+      return todos.filter(
+        (todo) => !todo.completed && matchesColorFilter(todo, colors),
+      )
     default:
-      return todos
+      return todos.filter((todo) => matchesColorFilter(todo, colors))
   }
 }

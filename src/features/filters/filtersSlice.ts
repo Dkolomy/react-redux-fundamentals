@@ -22,9 +22,9 @@ type FiltersState = {
 
 const initialState: FiltersState = {
   filters: {
-    status: 'All',
-    colors: []
-  }
+    status: STATUS_FILTERS.All,
+    colors: [...AVAILABLE_COLORS],
+  },
 }
 
 export const filtersSlice = createAppSlice({
@@ -34,12 +34,14 @@ export const filtersSlice = createAppSlice({
     statusFilterChanged: (state, action: PayloadAction<string>) => {
       state.filters.status = action.payload
     },
-    colorFilterChanged: (state, action: PayloadAction<{color: string, changeType: 'added' | 'removed'}>) => {
+    colorFilterChanged: (state, action: PayloadAction<{ color: string; changeType: 'added' | 'removed' }>) => {
       const { color, changeType } = action.payload
       if (changeType === 'added') {
-        state.filters.colors.push(color)
+        if (!state.filters.colors.includes(color)) {
+          state.filters.colors.push(color)
+        }
       } else {
-        state.filters.colors = state.filters.colors.filter(c => c !== color)
+        state.filters.colors = state.filters.colors.filter((c) => c !== color)
       }
     },
   }
