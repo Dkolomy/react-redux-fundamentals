@@ -26,7 +26,7 @@ let useSeededRNG = false
 
 //let rng: () => number = seedrandom()
 faker.seed(1234567890)
-let rng: () => number = () => faker.number.int()
+let rng: () => number = () => faker.number.float({ min: 0, max: 1 })
 
 if (useSeededRNG) {
   let randomSeedString = localStorage.getItem('randomTimestampSeed')
@@ -42,7 +42,7 @@ if (useSeededRNG) {
 
   // rng = seedrandom(randomSeedString)
   faker.seed(Number(randomSeedString))
-  rng = () => faker.number.int()
+  rng = () => faker.number.float({ min: 0, max: 1 })
 }
 
 function getRandomInt(min: number, max: number): number {
@@ -52,6 +52,9 @@ function getRandomInt(min: number, max: number): number {
 }
 
 const randomFromArray = <T,>(array: T[]): T => {
+  if (array.length === 0) {
+    throw new Error("Cannot select a random item from an empty array")
+  }
   const index = getRandomInt(0, array.length - 1)
   return array[index]
 }

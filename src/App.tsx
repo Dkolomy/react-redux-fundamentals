@@ -1,8 +1,17 @@
+import { useEffect } from "react"
 import Header from "./components/Header"
 import TodoList from "./components/TodoList"
 import Footer from "./components/Footer"
+import { useAppDispatch } from "./app/hooks"
+import { fetchTodos } from "./features/todo/todoSlice"
 
 export const App = () => {
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    dispatch(fetchTodos)
+  }, [dispatch])
+
   return (
     <div className="App">
       <nav>
