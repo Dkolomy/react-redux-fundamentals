@@ -16,7 +16,7 @@ export const App = () => {
     <div className="App">
       <nav>
         <section>
-          <h1>Redux Fundamentals Example</h1>
+          <h1>Todo List (React + Redux)</h1>
         </section>
       </nav>
       <main>
