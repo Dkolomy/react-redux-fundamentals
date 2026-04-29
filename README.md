@@ -2,6 +2,10 @@
 
 Uses [Vite](https://vitejs.dev/), [Vitest](https://vitest.dev/), and [React Testing Library](https://github.com/testing-library/react-testing-library) to create a modern [React](https://react.dev/) app compatible with [Create React App](https://create-react-app.dev/)
 
+[![Deploy to GitHub Pages](https://github.com/Dkolomy/react-redux-fundamentals/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/Dkolomy/react-redux-fundamentals/actions/workflows/deploy-pages.yml)
+
+Live app: https://dkolomy.github.io/react-redux-fundamentals/
+
 ```sh
 npx tiged reduxjs/redux-templates/packages/vite-template-redux my-app
 ```
