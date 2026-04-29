@@ -16,7 +16,7 @@ const TodoListItem = ({todo}: TodoListItemProps) => {
   const dispatch = useAppDispatch()
   const { text, completed, color } = todo
 
-  const handleCompletedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCompletedChange = (_e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(todoToggled(todo.id))
   }
 
